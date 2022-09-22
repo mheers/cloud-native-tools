@@ -43,6 +43,7 @@ ENV PATH "$PATH:/root/.krew/bin/"
 # RUN kubectl krew install cert-manager `# Manage cert-manager resources inside your cluster`
 # RUN kubectl krew install cilium `# Easily interact with Cilium agents`
 # RUN kubectl krew install config-cleanup `# Automatically clean up your kubeconfig`
+RUN kubectl krew install config-registry `# Switch between kubeconfig files`
 # RUN kubectl krew install creyaml `# Generate custom resource YAML manifest`
 # RUN kubectl krew install cyclonus `# NetworkPolicy analysis tool suite`
 # RUN kubectl krew install datree `# Scan your cluster resources for misconfigurations`
@@ -57,6 +58,7 @@ RUN kubectl krew install exec-as `# Like kubectl exec, but offers a 'user' flag 
 # RUN kubectl krew install flame `# Generate CPU flame graphs from pods`
 RUN kubectl krew install images `# Show container images used in the cluster`
 # RUN kubectl krew install janitor `# Lists objects in a problematic state`
+RUN kubectl krew install konfig `# Manage kubeconfig files`
 # RUN kubectl krew install ktop `# A top tool to display workload metrics`
 # RUN kubectl krew install lineage `# Display all dependent resources or resource dependencies`
 # RUN kubectl krew install neat `# Remove clutter from Kubernetes manifests to make them more readable`
