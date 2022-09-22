@@ -90,16 +90,6 @@ RUN kubectl krew install konfig `# Manage kubeconfig files`
 ## Install ohmyzsh
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-#Copy zsh files to /usr/share for all uer access
-RUN mv /root/.oh-my-zsh /usr/share/oh-my-zsh
-# Copy our zshrc into the dir (which will be the default for users)
-COPY /dockerroot/root/.zshrc /usr/share/oh-my-zsh/zshrc
-
-# Create hard link to the zshrc file so it creates an actual independent copy on new users
-RUN mkdir -p /etc/skel/ && ln /usr/share/oh-my-zsh/zshrc /etc/skel/.zshrc
-
-# TODO: make oh-my-zsh work for every user (maybe via an entrypoint script?)
-
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
 
 COPY /dockerroot/ /
