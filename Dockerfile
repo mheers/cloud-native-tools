@@ -6,6 +6,7 @@ USER root
 ENV PATH "$PATH:/root/.arkade/bin/"
 
 RUN apk add \
+    docker \
     fzf \
     zsh
 
@@ -98,6 +99,8 @@ COPY /dockerroot/root/.zshrc /usr/share/oh-my-zsh/zshrc
 RUN mkdir -p /etc/skel/ && ln /usr/share/oh-my-zsh/zshrc /etc/skel/.zshrc
 
 # TODO: make oh-my-zsh work for every user (maybe via an entrypoint script?)
+
+COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
 
 COPY /dockerroot/ /
 
