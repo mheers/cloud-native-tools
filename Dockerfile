@@ -1,6 +1,6 @@
 ARG ALPINE_VERSION
 
-FROM mheers/alpine-tools:${ALPINE_VERSION}
+FROM mheers/alpine-tools:${ALPINE_VERSION} as builder
 
 USER root
 ENV PATH "$PATH:/root/.arkade/bin/"
@@ -12,7 +12,6 @@ RUN apk add \
 
 ## Install arkade
 RUN curl -sLS https://get.arkade.dev | sh
-ENV PATH "$PATH:/root/.arkade/bin/"
 
 # RUN ark get --quiet argocd `# gitops`
 # RUN ark get --quiet argocd-autopilot `# opinionated argocd helper`
@@ -36,9 +35,13 @@ RUN ark get --quiet kubens `# kubernetes namespace manager`
 # RUN ark get --quiet vault `# needed? vault cli`
 RUN ark get --quiet yq `# yaml parser / manipulator`
 
+RUN chmod 777 /root/.arkade/bin/* && mv /root/.arkade/bin/* /usr/local/bin/
+
+ENV KREW_ROOT="/usr/local/krew/"
+ENV PATH "$PATH:/usr/local/krew/bin/"
+
 ## Install krew plugins
 RUN krew install krew
-ENV PATH "$PATH:/root/.krew/bin/"
 # RUN kubectl krew install access-matrix `# show an RBAC access matrix for server resources`
 # RUN kubectl krew install azad-proxy `# Generate and handle authentication for Azure AD`
 # RUN kubectl krew install cert-manager `# Manage cert-manager resources inside your cluster`
@@ -87,11 +90,34 @@ RUN kubectl krew install konfig `# Manage kubeconfig files`
 # RUN kubectl krew install who-can	`# Shows who has RBAC permissions to access Kubernetes resources`
 # RUN kubectl krew install whoami `# Show the subject that's currently authenticated as`
 
+RUN chmod 777 -R /usr/local/krew/store/
+
 ## Install ohmyzsh
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+#Copy zsh files to /usr/share for all uer access
+RUN cp -r /root/.oh-my-zsh /usr/share/oh-my-zsh
+# Copy our zshrc into the dir (which will be the default for users)
+COPY /dockerroot/root/.zshrc /usr/share/oh-my-zsh/
+
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
 
-COPY /dockerroot/ /
+RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
+
+ENV ZDOTDIR /usr/share/oh-my-zsh/
+ENV ZSH_CACHE_DIR /tmp/zshcache
+
+# COPY /dockerroot/ /
+
+CMD [ "zsh" ]
+
+# this reduces the image size from 848MB to 679MB
+FROM scratch
+COPY --from=builder / /
+
+ENV KREW_ROOT="/usr/local/krew/"
+ENV PATH "$PATH:/usr/local/krew/bin/"
+ENV ZDOTDIR /usr/share/oh-my-zsh/
+ENV XDG_CACHE_HOME /tmp/.cache
 
 CMD [ "zsh" ]
