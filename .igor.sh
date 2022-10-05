@@ -17,4 +17,4 @@ IGOR_MOUNTS_RO="/var/run/docker.sock ${HOME}/.git/ ${HOME}/.ssh/"          # spa
 IGOR_MOUNTS_RW="${HOME}/.kube"                  # space seperated list of volumes to mount read write
 IGOR_WORKDIR=${PWD}                             # use this workdir inside the container
 # IGOR_WORKDIR_MODE=rw                          # mount the workdir with this mode (ro/rw)
-IGOR_ENV='HOME'                                 # space separated list of environment variables set inside the container
+IGOR_ENV='KUBECONFIG HOME'                                 # space separated list of environment variables set inside the container
