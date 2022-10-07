@@ -102,6 +102,7 @@ RUN cp -r /root/.oh-my-zsh /usr/share/oh-my-zsh
 COPY /dockerroot/root/.zshrc /usr/share/oh-my-zsh/
 
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
+COPY --from=mheers/kubeyaml /usr/bin/kubeyaml /usr/bin/kubeyaml
 
 RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
 
