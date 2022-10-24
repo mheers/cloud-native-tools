@@ -7,6 +7,7 @@ ENV PATH "$PATH:/root/.arkade/bin/"
 
 RUN apk add \
     docker \
+    file \
     fzf \
     zsh
 
@@ -93,12 +94,20 @@ RUN kubectl krew install konfig `# Manage kubeconfig files`
 
 RUN chmod 777 -R /usr/local/krew/store/
 
+## Install the Pulumi SDK, including the CLI and language runtimes.
+RUN curl -fsSL https://get.pulumi.com/ | bash -s -- --version $PULUMI_VERSION && \
+    mv ~/.pulumi/bin/* /usr/bin
+
 ## Install ohmyzsh
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-#Copy zsh files to /usr/share for all uer access
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+RUN git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 
+
+## Copy zsh files to /usr/share for all uer access
 RUN cp -r /root/.oh-my-zsh /usr/share/oh-my-zsh
-# Copy our zshrc into the dir (which will be the default for users)
+## Copy our zshrc into the dir (which will be the default for users)
 COPY /dockerroot/root/.zshrc /usr/share/oh-my-zsh/
 
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
@@ -106,19 +115,17 @@ COPY --from=mheers/kubeyaml /usr/bin/kubeyaml /usr/bin/kubeyaml
 
 RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
 
-ENV ZDOTDIR /usr/share/oh-my-zsh/
-ENV ZSH_CACHE_DIR /tmp/zshcache
 
-# COPY /dockerroot/ /
-
-CMD [ "zsh" ]
-
-# this reduces the image size from 848MB to 679MB
-FROM scratch
+FROM golang:1.19.2-alpine3.16 as go
 COPY --from=builder / /
+RUN go install github.com/remotemobprogramming/mob/v3@latest
+
+
+FROM scratch
+COPY --from=go / /
 
 ENV KREW_ROOT="/usr/local/krew/"
-ENV PATH "$PATH:/usr/local/krew/bin/"
+ENV PATH "$PATH:/usr/local/krew/bin/:/go/bin:/usr/local/go/bin"
 ENV ZDOTDIR /usr/share/oh-my-zsh/
 ENV XDG_CACHE_HOME /tmp/.cache
 
