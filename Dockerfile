@@ -98,6 +98,13 @@ RUN chmod 777 -R /usr/local/krew/store/
 RUN curl -fsSL https://get.pulumi.com/ | bash -s -- --version $PULUMI_VERSION && \
     mv ~/.pulumi/bin/* /usr/bin
 
+ENV PULUMI_KUBE2PULUMI_VERSION=v3.0.0
+## Install the Pulumi kube2pulumi plugin.
+RUN pulumi plugin install resource kubernetes $PULUMI_KUBE2PULUMI_VERSION
+RUN wget https://github.com/pulumi/kube2pulumi/releases/download/v0.0.11/kube2pulumi-v0.0.11-linux-amd64.tar.gz && \
+    tar -xvf kube2pulumi-v0.0.11-linux-amd64.tar.gz && \
+    mv kube2pulumi /usr/bin
+
 ## Install ohmyzsh
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
@@ -112,6 +119,8 @@ COPY /dockerroot/root/.zshrc /usr/share/oh-my-zsh/
 
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
 COPY --from=mheers/kubeyaml /usr/bin/kubeyaml /usr/bin/kubeyaml
+
+RUN rm -r /tmp/*
 
 RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
 
