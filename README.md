@@ -48,9 +48,11 @@ Copy [.igor.sh](.igor.sh) to ~/.igor.sh or (better) link it: ```ln -s $(pwd)/get
 |nano|Simple Text Editor|
 |ncurses|Terminal UI Library|
 |netcat-openbsd|Swiss Army Knife of Networking|
+|nmap|Network Scanner|
 |openssh-client|SSH Client|
 |pulumi|Infrastructure as Code|
 |sudo|Run a command as another user|
+|tree|Display directory tree|
 |yq|yaml parser / manipulator|
 |zsh|ZSH CLI|
 
