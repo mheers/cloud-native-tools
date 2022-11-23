@@ -52,7 +52,9 @@ Copy [.igor.sh](.igor.sh) to ~/.igor.sh or (better) link it: ```ln -s $(pwd)/get
 |openssh-client|SSH Client|
 |pulumi|Infrastructure as Code|
 |sudo|Run a command as another user|
+|telnet|Telnet Client|
 |tree|Display directory tree|
+|vault|Secrets Management|
 |yq|yaml parser / manipulator|
 |zsh|ZSH CLI|
 

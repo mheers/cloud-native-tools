@@ -33,7 +33,7 @@ RUN ark get --quiet kubens `# kubernetes namespace manager`
 # RUN ark get --quiet polaris `# scan and check k8s pods`
 # RUN ark get --quiet promtool `# prometheus rule tester`
 # RUN ark get --quiet terraform `# needed? infrastructure as code`
-# RUN ark get --quiet vault `# needed? vault cli`
+RUN ark get --quiet vault `# vault cli`
 RUN ark get --quiet yq `# yaml parser / manipulator`
 
 RUN chmod 777 /root/.arkade/bin/* && mv /root/.arkade/bin/* /usr/local/bin/
