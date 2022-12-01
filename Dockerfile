@@ -31,7 +31,7 @@ RUN ark get --quiet kubens `# kubernetes namespace manager`
 # RUN ark get --quiet kubeseal `# needed? seal kubernetes secrets`
 # RUN ark get --quiet linkerd2 `# needed? linkerd cli`
 # RUN ark get --quiet polaris `# scan and check k8s pods`
-# RUN ark get --quiet promtool `# prometheus rule tester`
+RUN ark get --quiet promtool `# prometheus rule tester`
 # RUN ark get --quiet terraform `# needed? infrastructure as code`
 RUN ark get --quiet vault `# vault cli`
 RUN ark get --quiet yq `# yaml parser / manipulator`
@@ -117,6 +117,7 @@ RUN cp -r /root/.oh-my-zsh /usr/share/oh-my-zsh
 ## Copy our zshrc into the dir (which will be the default for users)
 COPY /dockerroot/root/.zshrc /usr/share/oh-my-zsh/
 
+COPY --from=mheers/k3dnifi /usr/bin/k3dnifi /usr/bin/k3dnifi
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
 COPY --from=mheers/kubeyaml /usr/bin/kubeyaml /usr/bin/kubeyaml
 

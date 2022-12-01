@@ -34,6 +34,7 @@ Copy [.igor.sh](.igor.sh) to ~/.igor.sh or (better) link it: ```ln -s $(pwd)/get
 |iputils|IP Tools|
 |jq|json parser / manipulator|
 |k3d|kubernetes cluster manager (k3s on docker)|
+|k3dnifi|Debug and manage nifi clusters (operated by nifikop) in a k3d cluster|
 |k3droot|Exec as root into a k3d managed pod|
 |k9s|kubernetes cluster cli admin tui|
 |konfig|Manage kubeconfig files|
@@ -50,6 +51,7 @@ Copy [.igor.sh](.igor.sh) to ~/.igor.sh or (better) link it: ```ln -s $(pwd)/get
 |netcat-openbsd|Swiss Army Knife of Networking|
 |nmap|Network Scanner|
 |openssh-client|SSH Client|
+|promtool|Prometheus rule tester|
 |pulumi|Infrastructure as Code|
 |sudo|Run a command as another user|
 |telnet|Telnet Client|
