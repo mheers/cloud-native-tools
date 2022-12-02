@@ -56,6 +56,7 @@ Copy [.igor.sh](.igor.sh) to ~/.igor.sh or (better) link it: ```ln -s $(pwd)/get
 |sudo|Run a command as another user|
 |telnet|Telnet Client|
 |tree|Display directory tree|
+|trivy|Container image vulnerability scanner|
 |vault|Secrets Management|
 |yq|yaml parser / manipulator|
 |zsh|ZSH CLI|
