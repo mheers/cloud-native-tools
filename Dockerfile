@@ -120,6 +120,7 @@ COPY /dockerroot/root/.zshrc /usr/share/oh-my-zsh/
 COPY --from=mheers/k3dnifi /usr/bin/k3dnifi /usr/bin/k3dnifi
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
 COPY --from=mheers/kubeyaml /usr/bin/kubeyaml /usr/bin/kubeyaml
+COPY --from=mheers/pulumi-helper /usr/bin/pulumi-helper /usr/bin/pulumi-helper
 COPY --from=aquasec/trivy:0.35.0 /usr/local/bin/trivy /usr/bin/trivy
 
 RUN rm -r /tmp/*
