@@ -1,6 +1,9 @@
 ARG ALPINE_VERSION
 
-FROM mheers/alpine-tools:${ALPINE_VERSION} as builder
+FROM --platform=$BUILDPLATFORM mheers/alpine-tools:${ALPINE_VERSION} as builder
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 
 USER root
 ENV PATH "$PATH:/root/.arkade/bin/"
@@ -12,7 +15,22 @@ RUN apk add \
     zsh
 
 ## Install arkade
-RUN curl -sLS https://get.arkade.dev | sh
+# RUN curl -sLS https://get.arkade.dev | sh
+
+RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+    wget https://github.com/alexellis/arkade/releases/download/0.8.62/arkade -O /usr/local/bin/arkade; \
+    elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+    wget https://github.com/alexellis/arkade/releases/download/0.8.62/arkade-arm64 -O /usr/local/bin/arkade; \
+    else \
+    echo "Unsupported platform: $TARGETPLATFORM"; exit 1; \
+    fi \
+    && chmod +x /usr/local/bin/arkade \
+    && ln -s /usr/local/bin/arkade /usr/local/bin/ark
+
+
+RUN /usr/local/bin/arkade --help
+# RUN ark --help  # a handy alias
+
 
 # RUN ark get --quiet argocd `# gitops`
 # RUN ark get --quiet argocd-autopilot `# opinionated argocd helper`
@@ -99,10 +117,11 @@ RUN curl -fsSL https://get.pulumi.com/ | bash -s -- --version $PULUMI_VERSION &&
     mv ~/.pulumi/bin/* /usr/bin
 
 ENV PULUMI_KUBE2PULUMI_VERSION=v3.0.0
+ENV PULUMI_KUBE2PULUMI_RELEASE=v0.0.12
 ## Install the Pulumi kube2pulumi plugin.
 RUN pulumi plugin install resource kubernetes $PULUMI_KUBE2PULUMI_VERSION
-RUN wget https://github.com/pulumi/kube2pulumi/releases/download/v0.0.11/kube2pulumi-v0.0.11-linux-amd64.tar.gz && \
-    tar -xvf kube2pulumi-v0.0.11-linux-amd64.tar.gz && \
+RUN export TP=${TARGETPLATFORM//\//-} && wget https://github.com/pulumi/kube2pulumi/releases/download/$PULUMI_KUBE2PULUMI_RELEASE/kube2pulumi-$PULUMI_KUBE2PULUMI_RELEASE-$TP.tar.gz && \
+    tar -xvf kube2pulumi-$PULUMI_KUBE2PULUMI_RELEASE-$TP.tar.gz && \
     mv kube2pulumi /usr/bin
 
 ## Install ohmyzsh
@@ -128,12 +147,12 @@ RUN rm -r /tmp/*
 RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
 
 
-FROM golang:1.19.2-alpine3.16 as go
+FROM --platform=$BUILDPLATFORM golang:1.19.2-alpine3.16 as go
 COPY --from=builder / /
 RUN go install github.com/remotemobprogramming/mob/v3@latest
 
 
-FROM scratch
+FROM --platform=$BUILDPLATFORM scratch
 COPY --from=go / /
 
 ENV KREW_ROOT="/usr/local/krew/"
