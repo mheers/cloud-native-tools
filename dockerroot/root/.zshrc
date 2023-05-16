@@ -122,3 +122,4 @@ export PROMPT='$(ph st n -i)'$PROMPT
 alias kubecfgx="k config-registry"
 
 source <(k3dnifi completion zsh); compdef _k3dnifi k3dnifi
+source <(step completion zsh)

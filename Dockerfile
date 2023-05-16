@@ -150,6 +150,7 @@ RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
 FROM --platform=$BUILDPLATFORM golang:1.19.2-alpine3.16 as go
 COPY --from=builder / /
 RUN go install github.com/remotemobprogramming/mob/v3@latest
+RUN go install github.com/smallstep/cli/cmd/step@latest
 
 
 FROM --platform=$BUILDPLATFORM scratch
