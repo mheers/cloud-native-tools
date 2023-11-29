@@ -18,9 +18,9 @@ RUN apk add \
 # RUN curl -sLS https://get.arkade.dev | sh
 
 RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
-    wget https://github.com/alexellis/arkade/releases/download/0.9.22/arkade -O /usr/local/bin/arkade; \
+    wget https://github.com/alexellis/arkade/releases/download/0.10.16/arkade -O /usr/local/bin/arkade; \
     elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-    wget https://github.com/alexellis/arkade/releases/download/0.9.22/arkade-arm64 -O /usr/local/bin/arkade; \
+    wget https://github.com/alexellis/arkade/releases/download/0.10.16/arkade-arm64 -O /usr/local/bin/arkade; \
     else \
     echo "Unsupported platform: $TARGETPLATFORM"; exit 1; \
     fi \
@@ -116,8 +116,8 @@ RUN chmod 777 -R /usr/local/krew/store/
 RUN curl -fsSL https://get.pulumi.com/ | bash -s -- --version $PULUMI_VERSION && \
     mv ~/.pulumi/bin/* /usr/bin
 
-ENV PULUMI_KUBE2PULUMI_VERSION=v3.29.1
-ENV PULUMI_KUBE2PULUMI_RELEASE=v0.0.12
+ENV PULUMI_KUBE2PULUMI_VERSION=v4.5.5
+ENV PULUMI_KUBE2PULUMI_RELEASE=v0.0.15
 ## Install the Pulumi kube2pulumi plugin.
 RUN pulumi plugin install resource kubernetes $PULUMI_KUBE2PULUMI_VERSION
 RUN export TP=${TARGETPLATFORM//\//-} && wget https://github.com/pulumi/kube2pulumi/releases/download/$PULUMI_KUBE2PULUMI_RELEASE/kube2pulumi-$PULUMI_KUBE2PULUMI_RELEASE-$TP.tar.gz && \
@@ -140,14 +140,14 @@ COPY --from=mheers/k3dnifi /usr/bin/k3dnifi /usr/bin/k3dnifi
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
 COPY --from=mheers/kubeyaml /usr/bin/kubeyaml /usr/bin/kubeyaml
 COPY --from=mheers/pulumi-helper /usr/bin/pulumi-helper /usr/bin/pulumi-helper
-COPY --from=aquasec/trivy:0.42.1 /usr/local/bin/trivy /usr/bin/trivy
+COPY --from=aquasec/trivy:0.47.0 /usr/local/bin/trivy /usr/bin/trivy
 
 RUN rm -r /tmp/*
 
 RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
 
 
-FROM --platform=$BUILDPLATFORM golang:1.20.5-alpine3.18 as go
+FROM --platform=$BUILDPLATFORM golang:1.21.4-alpine3.18 as go
 COPY --from=builder / /
 RUN go install github.com/remotemobprogramming/mob/v3@latest
 RUN go install github.com/smallstep/cli/cmd/step@latest
