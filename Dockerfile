@@ -142,10 +142,7 @@ COPY --from=mheers/kubeyaml /usr/bin/kubeyaml /usr/bin/kubeyaml
 COPY --from=mheers/pulumi-helper /usr/bin/pulumi-helper /usr/bin/pulumi-helper
 COPY --from=aquasec/trivy:0.47.0 /usr/local/bin/trivy /usr/bin/trivy
 
-RUN rm -r /tmp/*
-
 RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
-
 
 FROM --platform=$BUILDPLATFORM golang:1.21.4-alpine3.18 as go
 COPY --from=builder / /
