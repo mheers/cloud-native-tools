@@ -79,7 +79,7 @@ RUN kubectl krew install exec-as `# Like kubectl exec, but offers a 'user' flag 
 # RUN kubectl krew install exec-cronjob `# Run a CronJob immediately as Job`
 # RUN kubectl krew install fields `# Grep resources hierarchy by field name`
 # RUN kubectl krew install flame `# Generate CPU flame graphs from pods`
-RUN kubectl krew install hns `# Manage hierarchical namespaces`
+# RUN kubectl krew install hns `# Manage hierarchical namespaces`
 RUN kubectl krew install images `# Show container images used in the cluster`
 # RUN kubectl krew install janitor `# Lists objects in a problematic state`
 RUN kubectl krew install konfig `# Manage kubeconfig files`
@@ -116,8 +116,8 @@ RUN chmod 777 -R /usr/local/krew/store/
 RUN curl -fsSL https://get.pulumi.com/ | bash -s -- --version $PULUMI_VERSION && \
     mv ~/.pulumi/bin/* /usr/bin
 
-ENV PULUMI_KUBE2PULUMI_VERSION=v4.5.5
-ENV PULUMI_KUBE2PULUMI_RELEASE=v0.0.15
+ENV PULUMI_KUBE2PULUMI_VERSION=v4.9.1
+ENV PULUMI_KUBE2PULUMI_RELEASE=v0.0.17
 ## Install the Pulumi kube2pulumi plugin.
 RUN pulumi plugin install resource kubernetes $PULUMI_KUBE2PULUMI_VERSION
 RUN export TP=${TARGETPLATFORM//\//-} && wget https://github.com/pulumi/kube2pulumi/releases/download/$PULUMI_KUBE2PULUMI_RELEASE/kube2pulumi-$PULUMI_KUBE2PULUMI_RELEASE-$TP.tar.gz && \
@@ -140,11 +140,11 @@ COPY --from=mheers/k3dnifi /usr/bin/k3dnifi /usr/bin/k3dnifi
 COPY --from=mheers/k3droot /usr/bin/k3droot /usr/bin/k3droot
 COPY --from=mheers/kubeyaml /usr/bin/kubeyaml /usr/bin/kubeyaml
 COPY --from=mheers/pulumi-helper /usr/bin/pulumi-helper /usr/bin/pulumi-helper
-COPY --from=aquasec/trivy:0.47.0 /usr/local/bin/trivy /usr/bin/trivy
+COPY --from=aquasec/trivy:0.50.1 /usr/local/bin/trivy /usr/bin/trivy
 
 RUN mkdir -p /tmp/.cache && chmod 777 /tmp/.cache
 
-FROM --platform=$BUILDPLATFORM golang:1.21.4-alpine3.18 as go
+FROM --platform=$BUILDPLATFORM golang:1.22.1-alpine3.19 as go
 COPY --from=builder / /
 RUN go install github.com/remotemobprogramming/mob/v3@latest
 RUN go install github.com/smallstep/cli/cmd/step@latest
